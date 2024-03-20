@@ -1,0 +1,42 @@
+# Core WordPress files
+/wp-admin/
+/wp-includes/
+/xmlrpc.php
+/wp-*.php
+/index.php
+/license.txt
+/readme.html
+
+# wp-config files
+wp-config*.php
+
+# Exclude specific WordPress content directories, but include your child theme
+/wp-content/plugins/
+/wp-content/uploads/
+/wp-content/upgrade/
+/wp-content/index.php
+/wp-content/languages/
+
+# Include your child theme - adjust the directory name to your child theme's name
+!/wp-content/themes/twentytwentyfour-child/
+
+# Exclude all other themes
+/wp-content/themes/*
+
+# Exclude common file types and paths that should not be version-controlled
+*.log
+*.bak
+*.swp
+/sitemap.xml
+/.htaccess
+/.user.ini
+/wp-content/debug.log
+
+# Exclude node modules or other dependency directories
+/node_modules/
+/vendor/
+
+# Exclude any specific backup or temp files
+*.sql
+*.tar.gz
+*.zip
