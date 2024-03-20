@@ -1,0 +1,23 @@
+name: Deploy to WordPress Server
+
+on:
+  push:
+    branches:
+      - Ricardo-1.0  # selected for now - should be changed to main later on
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Deploy to WordPress server
+      uses: easingthemes/ssh-deploy@v2.1.5
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        ARGS: "-avzr --delete"  # Arguments to pass to rsync
+        SOURCE: "website/wp-content/themes/twentytwentyfour-child/"  # Path to the child theme directory
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}  # The server IP or hostname
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}  # SSH username
+        REMOTE_PORT: ${{ secrets.REMOTE_PORT }}  # Port for SFTP
+        TARGET: ${{ secrets.REMOTE_TARGET_PATH }}  # Path on the server to deploy to
