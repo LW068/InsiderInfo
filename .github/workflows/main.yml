@@ -15,6 +15,6 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.REMOTE_HOST }}  # The server IP or hostname
-        username: ${{ secrets.FTP_USERNAME }}  # FTP username, also store in secrets for consistency
+        username: ${{ secrets.FTP_USER }}  # FTP username, also store in secrets for consistency
         password: ${{ secrets.FTP_PASSWORD }}  # FTP password
         server-dir: "/home/insiewrh/public_html/wp-content/themes/twentytwentyfour-child/"  # Path on the server to deploy to
