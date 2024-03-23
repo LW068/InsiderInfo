@@ -19,4 +19,5 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}  # FTP password
         protocol: ftps
         port: ${{ secrets.REMOTE_PORT }}
+        local-dir: "website/" # local directory in the github repo (only changes made here will trigger this workflow)
         server-dir: "/public_html/wp-content/themes/twentytwentyfour-child/"  # Path on the server to deploy to
