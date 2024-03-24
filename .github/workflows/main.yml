@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - Ricardo-1.0  # selected for now - should be changed to main later on
-
+    paths:
+      - 'website/**' # only contents from this folder will be oushed to website (change if necessary)
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -17,5 +18,5 @@ jobs:
         server: ${{ secrets.REMOTE_HOST }}  # The server IP or hostname
         username: ${{ secrets.FTP_USER }}  # FTP username, also store in secrets for consistency
         password: ${{ secrets.FTP_PASSWORD }}  # FTP password
-        local-dir: "website/" # local directory in the github repo (only changes made here will trigger this workflow)
-        server-dir: "/home/insiewrh/public_html/wp-content/themes/twentytwentyfour-child/"  # Path on the server to deploy to
+        local-dir: "website/" # local directory in the github repo
+        server-dir: "/public_html/wp-content/themes/twentytwentyfour-child/"  # Path on the server to deploy to
