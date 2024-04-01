@@ -29,10 +29,10 @@ fig = go.Figure(data=[go.Candlestick(x=initial_data.index,
                                      close=initial_data['Close'])])
 
 fig.update_layout(title=f'Real-Time Candlestick Chart for {symbol}')
-fig.show()
 
 # Update the chart every minute
 while True:
     real_time_data = get_real_time_data(symbol)
     update_chart(fig, real_time_data)
+    fig.write_html('realtime_candlestick.html') # Write the updated chart to an HTML file
     time.sleep(30)  # Wait for 60 seconds before updating the chart again
