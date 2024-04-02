@@ -1,22 +1,22 @@
-name: Staging - Deploy to WordPress Server
+# name: Staging - Deploy to WordPress Server
 
-on:
-  push:
-    branches:
-      - staging  # selected staging branch
-    paths:
-      - 'website/**' # only contents from this folder will be oushed to website (change if necessary)
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
+# on:
+#   push:
+#     branches:
+#       - staging  # selected staging branch
+#     paths:
+#       - 'website/**' # only contents from this folder will be oushed to website (change if necessary)
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v3
 
-    - name: Deploying...
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.REMOTE_HOST }}  # The server IP or hostname
-        username: ${{ secrets.FTP_USER }}  # FTP username, also store in secrets for consistency
-        password: ${{ secrets.FTP_PASSWORD }}  # FTP password
-        local-dir: "website/" # local directory in the github repo
-        server-dir: "/staging/"  # Path on the server to deploy to
+#     - name: Deploying...
+#       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+#       with:
+#         server: ${{ secrets.REMOTE_HOST }}  # The server IP or hostname
+#         username: ${{ secrets.FTP_USER }}  # FTP username, also store in secrets for consistency
+#         password: ${{ secrets.FTP_PASSWORD }}  # FTP password
+#         local-dir: "website/" # local directory in the github repo
+#         server-dir: "/staging/"  # Path on the server to deploy to
