@@ -14,14 +14,19 @@
 
 <!-- Load the real-time candlestick chart from the HTML file -->
 <script>
-    Plotly.d3.text("realtime_candlestick.html", function(error, text) {
-        if (error) {
-            console.error("Error loading chart:", error);
-            return;
-        }
-        var chartDiv = document.getElementById('chart');
-        chartDiv.innerHTML = text;
-    });
+    function fetchAndUpdateChart() {
+        // Code to fetch data and update chart using Plotly (similar to your Python script logic)
+        // ...
+    }
+
+    // Initial fetch and update
+    fetchAndUpdateChart();
+
+    // Refresh the page and update chart every 60 seconds
+    setInterval(() => {
+        fetchAndUpdateChart();
+        window.location.reload(); // Refresh the page
+    }, 60000); // 60 seconds interval
 </script>
 </body>
 </html>
