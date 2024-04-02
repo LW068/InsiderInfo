@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Candlestick Chart</title>
+</head>
+<body>
+<div id="chart"></div>
+
+<!-- Include Plotly library -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<!-- Include the locally stored Node.js script -->
+<script src="updateChart.js"></script>
+
+<!-- Load the real-time candlestick chart from the HTML file -->
+<script>
+    Plotly.d3.text("realtime_candlestick.html", function(error, text) {
+        if (error) {
+            console.error("Error loading chart:", error);
+            return;
+        }
+        var chartDiv = document.getElementById('chart');
+        chartDiv.innerHTML = text;
+    });
+</script>
+</body>
+</html>

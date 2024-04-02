@@ -13,5 +13,16 @@ function updateChart() {
     });
 }
 
-// Update the chart every 60 seconds (60000 milliseconds)
-setInterval(updateChart, 60000);
+// Function to refresh the page
+function refreshPage() {
+    window.location.reload();
+}
+
+// Update the chart immediately on script start
+updateChart();
+
+// Refresh the page every 60 seconds (60000 milliseconds)
+setInterval(() => {
+    updateChart(); // Update the chart data
+    refreshPage(); // Refresh the page
+}, 60000); // 60 seconds interval
