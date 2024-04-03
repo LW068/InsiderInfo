@@ -103,9 +103,9 @@
   background: transparent url('https://assets-global.website-files.com/632af7498246e4709232743b/63474bae3edb03bcee29cb0c_noise-transparent.png') repeat 0 0;
   background-repeat: repeat;
   animation: bg-animation .2s infinite;
-  opacity: .9;
+  opacity: .5;
   visibility: visible;
-  z-index: .7;
+  z-index: 1;
   pointer-events: none;
 }
 
