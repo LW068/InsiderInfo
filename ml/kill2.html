@@ -1,0 +1,37 @@
+const express = require('express');
+const { readFile } = require('fs').promises;
+const { exec } = require('child_process');
+
+const app = express();
+
+// Serve static files from the 'public' directory
+app.use(express.static('Main'));
+
+// Define the route for serving the main web application
+app.get('/', async (request, response) => {
+    response.send(await readFile('./Main/index.html', 'utf8'));
+});
+
+// Define the route for serving the Dash app HTML with iframe
+app.get('/dash', async (request, response) => {
+    const iframeHTML = `
+    <iframe src="http://74.208.70.17:8050//" width="1400" height="500"></iframe>
+    `;
+    response.send(iframeHTML);
+});
+
+app.listen(process.env.PORT || 3000, () => {
+    console.log('App available on http://localhost:3000');
+
+    // Execute the Python script
+    exec('python3 Main/colantest.py', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing colantest.py: ${error}`);
+            return;
+        }
+        console.log(`colantest.py stdout: ${stdout}`);
+        console.error(`colantest.py stderr: ${stderr}`);
+    });
+});
+
+
