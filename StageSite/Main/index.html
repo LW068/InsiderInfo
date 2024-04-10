@@ -554,30 +554,7 @@
                           right: auto; /* Reset the right property */
                           transition: left 0.5s ease-out; /* Smooth transition for moving icon */
                         }
-
-                        @keyframes rotate {
-                          from {
-                            transform: rotate(0deg);
-                          }
-                          to {
-                            transform: rotate(360deg);
-                          }
-                        }
-
-                        #loading-logo {
-                          animation: rotate 2s linear infinite;
-                          position: fixed; /* Or absolute, depending on your layout */
-                          top: 50%; /* Center vertically */
-                          left: 50%; /* Center horizontally */
-                          transform: translate(-50%, -50%); /* Adjust based on the actual size of the logo */
-                          width: 100px; /* Adjust based on your logo's size */
-                          height: 100px; /* Adjust based on your logo's size */
-                        }
                       </style>
-
-                      <!-- Loading Logo Placeholder -->
-                      <img src="./public/external/LogoIcon.png" alt="Loading" id="loading-logo" style="display: none;" />
-
                       <div
                         class="collapse-icon-container"
                         onclick="toggleChatHistory()"
@@ -642,6 +619,7 @@
                         }
 
                         #chat-container {
+                          position: relative;
                           max-width: 768px;
                           margin: 0px auto;
                           border-radius: 8px;
@@ -659,6 +637,7 @@
                         }
 
                         #chat-window {
+                          position: relative;
                           color: #333;
                           height: 700px;
                           max-height: calc(100vh - 30px);
@@ -776,9 +755,50 @@
                         .rotate-animation {
                             animation: spin 2s linear infinite;
                         }
+
+                        @keyframes rotateAndPulse {
+                          0% {
+                            transform: rotate(0deg) scale(1);
+                            opacity: 1;
+                          }
+                          50% {
+                            transform: rotate(180deg) scale(1.3); /* Slightly larger at the halfway point */
+                            opacity: 1;
+                          }
+                          100% {
+                            transform: rotate(360deg) scale(1);
+                            opacity: 1;
+                          }
+                        }
+
+                        #loading-logo {
+                          animation: rotateAndPulse 1s linear infinite;
+                          position: absolute; /* Change from fixed to absolute */
+                          top: 35%;
+                          left: 42.5%;
+                          transform: translate(-50%, -50%);
+                          z-index: 100; /* Ensure it's above other elements */
+                          width: 100px;
+                          height: 100px;
+                          z-index: 100;
+                        }
+
+                        #loading-overlay {
+                          display: none; /* Hidden by default */
+                          position: absolute;
+                          top: 0;
+                          left: 0;
+                          width: 100%;
+                          height: 100%;
+                          background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+                          z-index: 99; /* Just below the loading logo */
+                        }
+
                       </style>
 
                       <div id="chat-container">
+                        <div id="loading-overlay" style="display: none;"></div> <!-- New overlay div -->
+                        <img src="./public/external/LogoIcon.png" alt="Loading" id="loading-logo" style="display: none;" />
                         <div id="chat-window">
                           <!-- Messages will be displayed here -->
                         </div>
@@ -789,7 +809,6 @@
                         ></textarea>
                         <button id="send-button"></button>
                       </div>
-
                       <script>
                         // Disable user input initially
                         var isWaitingForResponse = false;
@@ -800,6 +819,7 @@
                                 isWaitingForResponse = true; // Set the flag to disable new messages
                                 input.disabled = true; // Disable the input to prevent new messages
                                 addMessage(input.value, 'user');
+                                showLoadingIcon(); // Show loading icon when sending the message
                                 getResponseFromModel(input.value);
                                 input.value = ''; // Clears the input area
                             }
@@ -820,8 +840,19 @@
                             // This regex finds markdown link syntax [Text](URL) and captures the Text and URL in two groups
                             var markdownUrlRegex = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g;
                             return text.replace(markdownUrlRegex, '<a href="$2" target="_blank">$1</a>');
-                          }
+                        }
+                        
+                        function showLoadingIcon() {
+                            console.log('Showing the loading icon'); // Diagnostic log
+                            document.getElementById('loading-overlay').style.display = 'block'; // Show overlay
+                            document.getElementById('loading-logo').style.display = 'block';
+                        }
 
+                        function hideLoadingIcon() {
+                            console.log('Hiding the loading icon'); // Diagnostic log
+                            document.getElementById('loading-overlay').style.display = 'none'; // Hide overlay
+                            document.getElementById('loading-logo').style.display = 'none';
+                        }
                         
                         function addMessage(message, sender) {
                             var chatWindow = document.getElementById('chat-window');
@@ -832,8 +863,14 @@
                             senderLabel.classList.add(sender === 'user' ? 'username' : 'botname');
                             senderLabel.textContent = sender === 'user' ? 'You:' : 'InsiderInfo:';
 
+                            // Convert Markdown-like bold and italic to HTML
+                            var formattedMessage = message
+                              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+                              .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic
+                              .replace(/\n/g, '<br>'); // New lines
+
                             var messageContent = document.createElement('span');
-                            messageContent.innerHTML = linkify(message);
+                            messageContent.innerHTML = linkify(formattedMessage);
                             
                             messageDiv.appendChild(senderLabel);
                             messageDiv.appendChild(messageContent);
@@ -853,20 +890,18 @@
                           .then(response => response.json())
                           .then(data => {
                             addMessage(data.message, 'bot');
-                            isWaitingForResponse = false; // Re-enable message sending after response
-                            document.getElementById('chat-input').disabled = false; // Re-enable the input
+                            // ... any other code that processes the response ...
                           })
-                          .catch(error => console.error('Error:', error));
+                          .catch(error => {
+                            console.error('Error:', error);
+                          })
+                          .finally(() => {
+                            isWaitingForResponse = false; // Re-enable message sending after response or error
+                            document.getElementById('chat-input').disabled = false; // Re-enable the input
+                            hideLoadingIcon(); // Hide loading icon after response or error
+                          });
                         }
 
-                        function showLoadingIcon() {
-                            document.getElementById('loading-logo').style.display = 'block';
-                          }
-
-                        function hideLoadingIcon() {
-                            document.getElementById('loading-logo').style.display = 'none';
-                          }
-                        
                         function toggleChatHistory() {
                           var chatHistory = document.querySelector('.chat-history');
                           var chatContainer = document.querySelector('#chat-container');
