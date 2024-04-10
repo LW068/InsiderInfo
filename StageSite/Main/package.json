@@ -1,10 +1,20 @@
 {
-  "name": "untitled",
+  "name": "InsiderInfoService",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@langchain/community": "0.0.45",
+    "@langchain/openai": "0.0.26",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "duck-duck-scrape": "^2.2.5",
+    "express": "^4.19.2",
+    "langchain": "^0.1.31",
+    "openai": "^4.33.0",
     "parcel-bundler": "^1.6.1"
   },
-  "scripts": {},
-  "devDependencies": {}
+  "scripts": {
+    "start": "node InsiderInfo.cjs"
+  },
+  "type": "module"
 }
