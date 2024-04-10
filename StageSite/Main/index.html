@@ -53,6 +53,7 @@
       rel="stylesheet"
       href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css" /></head
   ><body
+    ><div class="bg-noise"></div
     ><link rel="stylesheet" href="./style.css" /><div
       ><link href="./index.css" rel="stylesheet" /><div
         class="insiderinfoapp-container"
@@ -167,10 +168,8 @@
               id="chartml"
               data-thq-animate-on-reveal="true"
               class="insiderinfoapp-div-chartml"
-              ><iframe
-                src='"/dash" width="700" height="600"'
-                class="insiderinfoapp-iframe"
-              ></iframe></div></animate-on-reveal
+              ><iframe src="http://localhost:8050" width="700" height="600" class="insiderinfoapp-iframe"></iframe>
+            </div></animate-on-reveal
           ><animate-on-reveal
             animation="fadeIn"
             duration="6s"
@@ -555,7 +554,29 @@
                           right: auto; /* Reset the right property */
                           transition: left 0.5s ease-out; /* Smooth transition for moving icon */
                         }
+
+                        @keyframes rotate {
+                          from {
+                            transform: rotate(0deg);
+                          }
+                          to {
+                            transform: rotate(360deg);
+                          }
+                        }
+
+                        #loading-logo {
+                          animation: rotate 2s linear infinite;
+                          position: fixed; /* Or absolute, depending on your layout */
+                          top: 50%; /* Center vertically */
+                          left: 50%; /* Center horizontally */
+                          transform: translate(-50%, -50%); /* Adjust based on the actual size of the logo */
+                          width: 100px; /* Adjust based on your logo's size */
+                          height: 100px; /* Adjust based on your logo's size */
+                        }
                       </style>
+
+                      <!-- Loading Logo Placeholder -->
+                      <img src="./public/external/LogoIcon.png" alt="Loading" id="loading-logo" style="display: none;" />
 
                       <div
                         class="collapse-icon-container"
@@ -563,7 +584,7 @@
                       >
                         <span class="collapse-icon"></span>
                       </div>
-
+                      
                       <div class="chat-history shown">
                         <div class="title">CHAT HISTORY</div>
                         <div class="date">Today</div>
@@ -719,6 +740,12 @@
                           align-self: flex-start;
                         }
 
+                        .message a {
+                          color: #3344DC; /* blue links! */
+                          text-decoration: underline;
+                        }
+
+
                         #chat-window::-webkit-scrollbar {
                           width: 8px;
                         }
@@ -737,6 +764,17 @@
                           .message {
                             max-width: 100%;
                           }
+                        }
+
+                        /* Rotation keyframes for animation */
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+
+                        /* Class to apply the animation to an element */
+                        .rotate-animation {
+                            animation: spin 2s linear infinite;
                         }
                       </style>
 
@@ -778,6 +816,13 @@
                             sendMessage();
                         });
 
+                        function linkify(text) {
+                            // This regex finds markdown link syntax [Text](URL) and captures the Text and URL in two groups
+                            var markdownUrlRegex = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g;
+                            return text.replace(markdownUrlRegex, '<a href="$2" target="_blank">$1</a>');
+                          }
+
+                        
                         function addMessage(message, sender) {
                             var chatWindow = document.getElementById('chat-window');
                             var messageDiv = document.createElement('div');
@@ -787,8 +832,11 @@
                             senderLabel.classList.add(sender === 'user' ? 'username' : 'botname');
                             senderLabel.textContent = sender === 'user' ? 'You:' : 'InsiderInfo:';
 
+                            var messageContent = document.createElement('span');
+                            messageContent.innerHTML = linkify(message);
+                            
                             messageDiv.appendChild(senderLabel);
-                            messageDiv.appendChild(document.createTextNode(message));
+                            messageDiv.appendChild(messageContent);
 
                             messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
 
@@ -800,7 +848,7 @@
                           fetch('http://localhost:3000/query', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ query: message }),
+                            body: JSON.stringify({ input: message }),
                           })
                           .then(response => response.json())
                           .then(data => {
@@ -811,7 +859,14 @@
                           .catch(error => console.error('Error:', error));
                         }
 
+                        function showLoadingIcon() {
+                            document.getElementById('loading-logo').style.display = 'block';
+                          }
 
+                        function hideLoadingIcon() {
+                            document.getElementById('loading-logo').style.display = 'none';
+                          }
+                        
                         function toggleChatHistory() {
                           var chatHistory = document.querySelector('.chat-history');
                           var chatContainer = document.querySelector('#chat-container');
